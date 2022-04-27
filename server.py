@@ -5,9 +5,10 @@ from Compte import Compte, LireCompte, LireTousComptes, ModifierCompte, addCompt
 from Facture import LireFacture
 from Transaction import EffectuerTransaction, LireTousTransactions
 
-HEADER = 2048
+HEADER = 64
 PORT = 5050
-SERVER = socket.gethostbyname(socket.gethostname())
+#SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = "192.168.1.16"
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"

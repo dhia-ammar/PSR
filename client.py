@@ -2,11 +2,11 @@ import socket
 import threading
 
 
-HEADER = 2048
+HEADER = 64
 PORT = 5050
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
-SERVER = "192.168.1.4"
+SERVER = "192.168.1.16"
 ADDR = (SERVER, PORT)
 ANSWER_MESSAGE = "!ANSWER"
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

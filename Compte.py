@@ -12,13 +12,11 @@ class Compte:
         self.password = password
 
     def WriteFile(self):
-        #f = open(".\Files\Comptes.txt", 'ab')
-        f = open(".\Files\Comptes.txt", 'a')
+        f = open(".\Files\Comptes.txt", 'ab')
         data = str(self.refCompte)+'.'+self.name+'.'+str(self.valeur) + \
             '.' + self.etat+'.'+str(self.plafond)+'.'+self.password
-        # encrypted_data = EncryptData('compteKey.key', str.encode(data))
-        # f.write(encrypted_data+str.encode('\n'))
-        f.write(data+'\n')
+        encrypted_data = EncryptData('compteKey.key', str.encode(data))
+        f.write(encrypted_data+str.encode('\n'))
         print("Compte est sauvegarder avec success")
         f.close()
 
@@ -37,17 +35,13 @@ class Compte:
 
 
 def LireCompte(ref):
-    # f = open(".\Files\Comptes.txt", 'rb')
-    f = open(".\Files\Comptes.txt", 'r')
+    f = open(".\Files\Comptes.txt", 'rb')
     while True:
         ligne = f.readline()
-        # if(ligne == b''):
-        if(ligne == ''):
+        if(ligne == b''):
             break
-        #decryptedData = DecryptData('compteKey.key', ligne)
-        #data = decryptedData.split('.')
-        ligne = ligne.strip()
-        data = ligne.split('.')
+        decryptedData = DecryptData('compteKey.key', ligne)
+        data = decryptedData.split('.')
         compte = Compte(data[0], data[1], data[2], data[3], data[4], data[5])
         if (int(compte.refCompte) == ref):
             return compte
@@ -56,18 +50,14 @@ def LireCompte(ref):
 
 
 def LireTousComptes():
-    # f = open(".\Files\Comptes.txt", 'rb')
-    f = open(".\Files\Comptes.txt", 'r')
+    f = open(".\Files\Comptes.txt", 'rb')
     comptes = []
     while True:
         ligne = f.readline()
-        # if(ligne == b''):
-        if(ligne == ''):
+        if(ligne == b''):
             break
-        # decryptedData = DecryptData('compteKey.key', ligne)
-        # data = decryptedData.split('.')
-        ligne = ligne.strip()
-        data = ligne.split('.')
+        decryptedData = DecryptData('compteKey.key', ligne)
+        data = decryptedData.split('.')
         compte = Compte(data[0], data[1], data[2], data[3], data[4], data[5])
         comptes.append(compte)
     f.close()
@@ -75,20 +65,15 @@ def LireTousComptes():
 
 
 def ModifierCompte(ref, type, montant):
-    f = open(".\Files\Comptes.txt", 'r')
-    # f = open(".\Files\Comptes.txt", 'rb')
+    f = open(".\Files\Comptes.txt", 'rb')
     existe = False
     comptes = []
     while True:
         ligne = f.readline()
-        print(ligne)
-        # if(ligne == b''):
-        if(ligne == ''):
+        if(ligne == b''):
             break
-        # decryptedData = DecryptData('compteKey.key', ligne)
-        # data = decryptedData.split('.')
-        ligne = ligne.strip()
-        data = ligne.split('.')
+        decryptedData = DecryptData('compteKey.key', ligne)
+        data = decryptedData.split('.')
         print(len(data))
         compte = Compte(data[0], data[1], data[2], data[3], data[4], data[5])
         if (compte.refCompte == ref):
@@ -132,18 +117,15 @@ def ModifierCompte(ref, type, montant):
 
 
 def EstExiste(refCompteRecherche):
-    # f = open(".\Files\Comptes.txt", 'rb')
-    f = open(".\Files\Comptes.txt", 'r')
+    f = open(".\Files\Comptes.txt", 'rb')
     while True:
         ligne = f.readline()
         print(ligne)
         # if(ligne == b''):
         if(ligne == ''):
             break
-        # decryptedData = DecryptData('compteKey.key', ligne)
-        # data = decryptedData.split('.')
-        ligne = ligne.strip()
-        data = ligne.split('.')
+        decryptedData = DecryptData('compteKey.key', ligne)
+        data = decryptedData.split('.')
         compte = Compte(data[0], data[1], data[2],
                         data[3], data[4], data[5])
         if (int(compte.refCompte) == int(refCompteRecherche)):
@@ -164,18 +146,14 @@ def addCompte(refCompte, name, password, plafond, valeur=0, etat="positif"):
 
 
 def authenticate(refCompte, password):
-    # f = open(".\Files\Comptes.txt", 'rb')
-    f = open(".\Files\Comptes.txt", 'r')
+    f = open(".\Files\Comptes.txt", 'rb')
     resultat = dict()
     while True:
         ligne = f.readline()
-        # if(ligne == b''):
-        if(ligne == ''):
+        if(ligne == b''):
             break
-        #decryptedData = DecryptData('compteKey.key', ligne)
-        #data = decryptedData.split('.')
-        ligne = ligne.strip()
-        data = ligne.split('.')
+        decryptedData = DecryptData('compteKey.key', ligne)
+        data = decryptedData.split('.')
         compte = Compte(int(data[0]), data[1], data[2],
                         data[3], data[4], data[5])
         if (compte.refCompte == int(refCompte) and compte.password == password):
@@ -186,7 +164,10 @@ def authenticate(refCompte, password):
     resultat['status'] = False
     return resultat
 
-
+#addCompte("1000","nejah","nejah","500","400")
+#addCompte("1001","dhia","nejah","500","400")
+#addCompte("1002","siwar","nejah","500","400")
+#addCompte("1003","rami","nejah","500","400")
 # Compte("1000","nejah","200","positif","500","nejah").WriteFile()
 # Compte("1001","rami","200","positif","500","nejah").WriteFile()
 # Compte("1002","dhia","200","positif","500","nejah").WriteFile()

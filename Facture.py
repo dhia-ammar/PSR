@@ -15,41 +15,31 @@ class Facture:
         return info
 
     def WriteFile(self):
-        # f = open(".\Files\Factures.txt", 'rb')
-        f = open(".\Files\Factures.txt", 'r')
+        f = open(".\Files\Factures.txt", 'rb')
         while True:
             ligne = f.readline()
-            # if(ligne == b''):
-            if(ligne == ''):
+            if(ligne == b''):
                 break
-            # decryptedData = DecryptData('compteKey.key', ligne)
-            # data = decryptedData.split('.')
-            ligne = ligne.strip()
-            data = ligne.split('.')
+            decryptedData = DecryptData('compteKey.key', ligne)
+            data = decryptedData.split('.')
             facture = Facture(data[0], data[1])
             if (int(facture.refCompte) == int(self.refCompte)):
                 raise Exception("La Facture est existe deja")
         f.close()
-        # f = open(".\Files\Factures.txt", 'ab')
-        f = open(".\Files\Factures.txt", 'a')
+        f = open(".\Files\Factures.txt", 'ab')
         data = str(self.refCompte)+'.'+str(self.somme)
-        # encrypted_data = EncryptData('compteKey.key', str.encode(data))
-        # f.write(encrypted_data+str.encode('\n'))
-        f.write(data+'\n')
+        encrypted_data = EncryptData('compteKey.key', str.encode(data))
+        f.write(encrypted_data+str.encode('\n'))
         print("Facture est sauvegarder avec success")
         f.close()
 
 
 def LireFacture(ref):
-    # f = open(".\Files\Factures.txt", 'rb')
-    f = open(".\Files\Factures.txt", 'r')
+    f = open(".\Files\Factures.txt", 'rb')
     existe = False
     for ligne in f.readlines():
-        # if(ligne == b''):
-        # decryptedData = DecryptData('compteKey.key', ligne)
-        # data = decryptedData.split('.')
-        ligne = ligne.strip()
-        data = ligne.split('.')
+        decryptedData = DecryptData('compteKey.key', ligne)
+        data = decryptedData.split('.')
         facture = Facture(data[0], data[1])
         if (int(facture.refCompte) == ref):
             existe = True
@@ -60,15 +50,11 @@ def LireFacture(ref):
 
 
 def LireTousFactures():
-    # f = open(".\Files\Factures.txt", 'rb')
-    f = open(".\Files\Factures.txt", 'r')
+    f = open(".\Files\Factures.txt", 'rb')
     factures = []
     for ligne in f.readlines():
-        # if(ligne == b''):
-        #  decryptedData = DecryptData('compteKey.key', ligne)
-        #  data = decryptedData.split('.')
-        ligne = ligne.strip()
-        data = ligne.split('.')
+        decryptedData = DecryptData('compteKey.key', ligne)
+        data = decryptedData.split('.')
         facture = Facture(data[0], data[1])
         factures.append(facture)
         facture.AfficherFacture()
@@ -77,16 +63,12 @@ def LireTousFactures():
 
 
 def ModifierFacture(ref, montant):
-    f = open(".\Files\Factures.txt", 'r')
-    # f = open(".\Files\Factures.txt", 'rb')
+    f = open(".\Files\Factures.txt", 'rb')
     factures = []
     existe = False
     for ligne in f.readlines():
-        # if(ligne == b''):
-        # decryptedData = DecryptData('compteKey.key', ligne)
-        # data = decryptedData.split('.')
-        ligne = ligne.strip()
-        data = ligne.split('.')
+        decryptedData = DecryptData('compteKey.key', ligne)
+        data = decryptedData.split('.')
         facture = Facture(data[0], data[1])
         if (int(facture.refCompte) == ref):
             existe = True
@@ -98,8 +80,7 @@ def ModifierFacture(ref, montant):
     if(not existe):
         raise Exception("Le compte Specifie est inrovable")
     # Clear the file
-    #f = open(".\Files\Factures.txt", 'wb')
-    f = open(".\Files\Factures.txt", 'w')
+    f = open(".\Files\Factures.txt", 'wb')
     f.close()
     for facture in factures:
         facture.WriteFile()

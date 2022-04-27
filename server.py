@@ -87,7 +87,7 @@ def send_menu(conn):
         msg = "5 - Deconnectez-Vous"
         send_message(conn, msg)
         option = recieve_msg(conn)
-        if option not in '1234':
+        if option not in '12345':
             msg = "ERREUR: Choix Invalide!"
             send_message(conn, msg)
     return option
@@ -109,7 +109,7 @@ def send_admin_menu(conn):
         msg = "5 - Deconnectez-Vous"
         send_message(conn, msg)
         option = recieve_msg(conn)
-        if option not in '1234':
+        if option not in '12345':
             msg = "ERREUR: Choix Invalide!"
             send_message(conn, msg)
     return option

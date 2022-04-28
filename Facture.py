@@ -34,7 +34,7 @@ class Facture:
         data = str(self.refCompte)+'.'+str(self.somme)
         encrypted_data = EncryptData('compteKey.key', str.encode(data))
         f.write(encrypted_data+str.encode('\n'))
-        print("Facture est sauvegarder avec success")
+        #print("Facture est sauvegarder avec success")
         f.close()
 
 
@@ -82,7 +82,7 @@ def ModifierFacture(ref, montant):
         factures.append(facture)
     f.close()
     if(not existe):
-        raise Exception("Le compte Specifie est inrovable")
+        raise Exception("Le compte Specifie est introuvable")
     # Clear the file
     f = open(factures_file, 'wb')
     f.close()

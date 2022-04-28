@@ -4,11 +4,12 @@ import threading
 from Compte import Compte, LireCompte, LireTousComptes, ModifierCompte, addCompte, authenticate
 from Facture import LireFacture
 from Transaction import EffectuerTransaction, LireTousTransactions
+from datetime import datetime
 
 HEADER = 64
 PORT = 5050
 #SERVER = socket.gethostbyname(socket.gethostname())
-SERVER = "192.168.1.16"
+SERVER = "172.18.3.163"
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
@@ -16,6 +17,7 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 ANSWER_MESSAGE = "!ANSWER"
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind(ADDR)
 
 connections = []
@@ -53,7 +55,7 @@ def login(conn):
         auth = {"status": True, 'data': "admin"}
     else:
         auth = authenticate(num_compte, password)
-    print(f"{num_compte} - {password}")
+    print(f"{num_compte} - s'est connecte")
     return auth
 
 
@@ -126,10 +128,13 @@ def handle_option(conn, compte, option):
             send_message(conn, msg)
             montant = int(recieve_msg(conn))
         operation = EffectuerTransaction(compte.refCompte, "ajout", montant)
+        dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         if operation == True:
             msg = f"Ajout de {montant}DT effectue avec success!"
+            print(f"[{dt_string}] {compte.name} a effectue un ajout de {montant}DT avec success")
         elif operation == False:
             msg = "ERREUR: Ajout Echoue! Reessayez !"
+            print(f"[{dt_string}] {compte.name} a  echouer a effectuer un ajout de {montant}DT")
         send_message(conn, msg)
         unlock(compte)
     elif option == '2':
@@ -142,6 +147,7 @@ def handle_option(conn, compte, option):
             send_message(conn, msg)
             montant = int(recieve_msg(conn))
         operation = EffectuerTransaction(compte.refCompte, "retrait", montant)
+        dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         if operation == True:
             msg = f"Retrait de {montant}DT effectue avec success!"
             send_message(conn, msg)
@@ -149,9 +155,11 @@ def handle_option(conn, compte, option):
             msg = "Votre Facture"
             send_message(conn, msg)
             send_message(conn, str(facture))
+            print(f"[{dt_string}] {compte.name} a effectue un retrait de {montant}DT avec success")
         else:
             msg = "ERREUR: Retrait Echoue! Vous avez depassez le plafond !"
             send_message(conn, msg)
+            print(f"[{dt_string}] {compte.name} a echouer a faire un retrait de {montant}DT")
         unlock(compte)
     elif option == '3':
         compte = LireCompte(compte.refCompte)
@@ -194,10 +202,13 @@ def handle_admin_option(conn, option):
         send_message(conn, msg)
         plafond = recieve_msg(conn)
         etat = addCompte(ref, nom, password, plafond)
+        dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         if etat:
             msg = f"Compte {ref} Cree avec success"
+            print(f"[{dt_string}] admin a cree un compte avec id {ref} avec success")
         else:
             msg = "Donnes invalides ou l'identifiant du compte existe deja"
+            print(f"[{dt_string}] admin a echoue a creer un compte avec id {ref}")
         send_message(conn, msg)
 
 
@@ -222,18 +233,22 @@ def handle_client(conn, addr):
         if compte == 'admin':
             option = send_admin_menu(conn)
             if option == '5':
+                dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                 send_message(conn, DISCONNECT_MESSAGE)
                 connected = False
                 connections.remove(conn)
+                print(f"[{dt_string}] admin s'est deconnecte!")
                 print(f"[{addr}] has disconnected!")
                 break
             handle_admin_option(conn, option)
         else:
             option = send_menu(conn)
             if option == '5':
+                dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                 send_message(conn, DISCONNECT_MESSAGE)
                 connected = False
                 connections.remove(conn)
+                print(f"[{dt_string}] {compte.name} s'est deconnecte!")
                 print(f"[{addr}] has disconnected!")
                 break
             handle_option(conn, compte, option)

@@ -22,7 +22,7 @@ class Compte:
             '.' + self.etat+'.'+str(self.plafond)+'.'+self.password
         encrypted_data = EncryptData('compteKey.key', str.encode(data))
         f.write(encrypted_data+str.encode('\n'))
-        print("Compte est sauvegarder avec success")
+        #print("Compte est sauvegarder avec success")
         f.close()
 
     def __str__(self):
@@ -79,14 +79,14 @@ def ModifierCompte(ref, type, montant):
             break
         decryptedData = DecryptData('compteKey.key', ligne)
         data = decryptedData.split('.')
-        print(len(data))
+        #print(len(data))
         compte = Compte(data[0], data[1], data[2], data[3], data[4], data[5])
         if (compte.refCompte == ref):
             existe = True
             if (type == "ajout"):
-                print("ajout")
+                #print("ajout")
                 if (compte.etat == "positif"):
-                    print("positif")
+                    #print("positif")
                     compte.valeur = str(montant+int(compte.valeur))
                 elif (compte.etat == "negatif"):
                     if(montant > int(compte.valeur)):
@@ -114,9 +114,9 @@ def ModifierCompte(ref, type, montant):
     # Clear the file
     f = open(comptes_file, 'w')
     f.close()
-    print("lenArray:"+str(len(comptes)))
+    #print("lenArray:"+str(len(comptes)))
     for compte in comptes:
-        compte.AfficherCompte()
+        #compte.AfficherCompte()
         compte.WriteFile()
     print("Compte modifie avec success")
 

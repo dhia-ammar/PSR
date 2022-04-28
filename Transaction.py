@@ -22,7 +22,7 @@ class Transaction:
             '.'+self.valeur+'.'+self.etat+'.'+self.resultat
         encrypted_data = EncryptData('compteKey.key', str.encode(data))
         f.write(encrypted_data+str.encode('\n'))
-        print("Transaction est sauvegarder avec success")
+        #print("Transaction est sauvegarder avec success")
         f.close()
 
     def __str__(self):
@@ -61,7 +61,7 @@ def LireTousTransactions():
     for ligne in f.readlines():
         decryptedData = DecryptData('compteKey.key', ligne)
         data = decryptedData.split('.')
-        print(data)
+        #print(data)
         transaction = Transaction(data[0], data[1], data[2], data[3], data[4])
         transactions.append(transaction)
     f.close()

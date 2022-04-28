@@ -162,10 +162,13 @@ def handle_option(conn, compte, option):
 
 
 def handle_admin_option(conn, option):
+    separateur = "===================="
     if option == '1':
         list_comptes = LireTousComptes()
+
         for compte in list_comptes:
             send_message(conn, str(compte))
+            send_message(conn, separateur)
     elif option == '2':
         msg = "Donnez le compte pour lequel vous voulez afficher la facture "
         send_message(conn, msg)
@@ -176,6 +179,7 @@ def handle_admin_option(conn, option):
         liste_transactions = LireTousTransactions()
         for transction in liste_transactions:
             send_message(conn, str(transction))
+            send_message(conn, separateur)
     elif option == '4':
         msg = "Donnez l'identifian du compte "
         send_message(conn, msg)

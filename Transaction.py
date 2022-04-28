@@ -1,7 +1,11 @@
-from sqlalchemy import true
-from torch import negative
 from Compte import LireCompte, ModifierCompte
 from Facture import ModifierFacture
+from Cryptage import *
+import os
+
+
+dir = os.path.join(os.getcwd(), "Files")
+transactions_file = os.path.join(dir, "Transactions.txt")
 
 
 class Transaction:
@@ -13,14 +17,11 @@ class Transaction:
         self.resultat = resultat
 
     def WriteFile(self):
-        # f = open(".\Files\Transactions.txt", 'ab')
-        f = open(".\Files\Transactions.txt", 'a')
+        f = open(transactions_file, 'ab')
         data = str(self.refCompte)+'.'+self.typeTransaction + \
             '.'+self.valeur+'.'+self.etat+'.'+self.resultat
-        f.write(data+'\n')
-        # f.write(str.encode(data+'/n'))
-        # encrypted_data=EncryptData('compteKey.key',str.encode(data))
-        # f.write(encrypted_data+str.encode('\n'))
+        encrypted_data = EncryptData('compteKey.key', str.encode(data))
+        f.write(encrypted_data+str.encode('\n'))
         print("Transaction est sauvegarder avec success")
         f.close()
 
@@ -37,18 +38,14 @@ class Transaction:
 
 
 def LireTransactions(ref):
-    # f = open(".\Files\Transactions.txt", 'rb')
-    f = open(".\Files\Transactions.txt", 'r')
+    f = open(transactions_file, 'rb')
     transactions = []
     while True:
         ligne = f.readline()
-        # if(ligne == b''):
-        if(ligne == ''):
+        if(ligne == b''):
             break
-        # decryptedData=DecryptData('compteKey.key',ligne)
-        # data = decryptedData.split('.')
-        ligne = ligne.strip()
-        data = ligne.split('')
+        decryptedData = DecryptData('compteKey.key', ligne)
+        data = decryptedData.split('.')
         transaction = Transaction(data[0], data[1], data[2], data[3], data[4])
         if (int(transaction.refCompte) == ref):
             transactions.append(transaction)
@@ -59,15 +56,11 @@ def LireTransactions(ref):
 
 
 def LireTousTransactions():
-    # f = open(".\Files\Transactions.txt", 'rb')
-    f = open(".\Files\Transactions.txt", 'r')
+    f = open(transactions_file, 'rb')
     transactions = []
     for ligne in f.readlines():
-
-        # decryptedData=DecryptData('compteKey.key',ligne)
-        # data = decryptedData.split('.')
-        ligne = ligne.strip()
-        data = ligne.split('.')
+        decryptedData = DecryptData('compteKey.key', ligne)
+        data = decryptedData.split('.')
         print(data)
         transaction = Transaction(data[0], data[1], data[2], data[3], data[4])
         transactions.append(transaction)

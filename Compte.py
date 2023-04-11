@@ -2,7 +2,6 @@ from Cryptage import *
 from Facture import Facture, LireFacture
 import os
 
-
 dir = os.path.join(os.getcwd(), "Files")
 comptes_file = os.path.join(dir, "Comptes.txt")
 
@@ -18,37 +17,37 @@ class Compte:
 
     def WriteFile(self):
         f = open(comptes_file, 'ab')
-        data = str(self.refCompte)+'.'+self.name+'.'+str(self.valeur) + \
-            '.' + self.etat+'.'+str(self.plafond)+'.'+self.password
+        data = str(self.refCompte) + '.' + self.name + '.' + str(self.valeur) + \
+               '.' + self.etat + '.' + str(self.plafond) + '.' + self.password
         encrypted_data = EncryptData('compteKey.key', str.encode(data))
-        f.write(encrypted_data+str.encode('\n'))
-        #print("Compte est sauvegarder avec success")
+        f.write(encrypted_data + str.encode('\n'))
+        # print("Compte est sauvegarder avec success")
         f.close()
 
     def __str__(self):
-        info = "ID: "+str(self.refCompte)+"\n"+"Name: "+self.name+"\n"+"Valeur: " + \
-            self.valeur+"\n"+"Etat: "+self.etat+"\n"+"Plafond: "+self.plafond
+        info = "ID: " + str(self.refCompte) + "\n" + "Name: " + self.name + "\n" + "Valeur: " + \
+               self.valeur + "\n" + "Etat: " + self.etat + "\n" + "Plafond: " + self.plafond
         return info
 
     def AfficherCompte(self):
-        print("ID: "+str(self.refCompte))
-        print("Name: "+self.name)
-        print("Valeur: "+self.valeur)
-        print("Etat: "+self.etat)
-        print("Plafond: "+self.plafond)
-        print("Password: "+self.password)
+        print("ID: " + str(self.refCompte))
+        print("Name: " + self.name)
+        print("Valeur: " + self.valeur)
+        print("Etat: " + self.etat)
+        print("Plafond: " + self.plafond)
+        print("Password: " + self.password)
 
 
 def LireCompte(ref):
     f = open(comptes_file, 'rb')
     while True:
         ligne = f.readline()
-        if(ligne == b''):
+        if ligne == b'':
             break
         decryptedData = DecryptData('compteKey.key', ligne)
         data = decryptedData.split('.')
         compte = Compte(data[0], data[1], data[2], data[3], data[4], data[5])
-        if (int(compte.refCompte) == ref):
+        if int(compte.refCompte) == ref:
             return compte
     f.close()
     raise Exception("Le compte est introvable")
@@ -59,7 +58,7 @@ def LireTousComptes():
     comptes = []
     while True:
         ligne = f.readline()
-        if(ligne == b''):
+        if (ligne == b''):
             break
         decryptedData = DecryptData('compteKey.key', ligne)
         data = decryptedData.split('.')
@@ -75,48 +74,50 @@ def ModifierCompte(ref, type, montant):
     comptes = []
     while True:
         ligne = f.readline()
-        if(ligne == b''):
+        if (ligne == b''):
             break
         decryptedData = DecryptData('compteKey.key', ligne)
         data = decryptedData.split('.')
-        #print(len(data))
+        # print(len(data))
         compte = Compte(data[0], data[1], data[2], data[3], data[4], data[5])
-        if (compte.refCompte == ref):
+        if compte.refCompte == ref:
             existe = True
-            if (type == "ajout"):
-                #print("ajout")
-                if (compte.etat == "positif"):
-                    #print("positif")
-                    compte.valeur = str(montant+int(compte.valeur))
-                elif (compte.etat == "negatif"):
-                    if(montant > int(compte.valeur)):
-                        compte.valeur = str(montant-int(compte.valeur))
+            if type == "ajout":
+                # print("ajout")
+                if compte.etat == "positif":
+                    # print("positif")
+                    compte.valeur = str(montant + int(compte.valeur))
+                elif compte.etat == "negatif":
+                    if montant > int(compte.valeur):
+                        compte.valeur = str(montant - int(compte.valeur))
                         compte.etat = "positif"
                     else:
-                        compte.valeur = str(int(compte.valeur)-montant)
-            elif (type == "retrait"):
-                if (compte.etat == "positif" and int(compte.plafond)+int(compte.valeur) < int(montant) or compte.etat == "negatif" and int(compte.plafond)-int(compte.valeur) < int(montant)):
+                        compte.valeur = str(int(compte.valeur) - montant)
+            elif type == "retrait":
+                if (compte.etat == "positif" and int(compte.plafond) + int(compte.valeur) < int(
+                        montant) or compte.etat == "negatif" and int(compte.plafond) - int(compte.valeur) < int(
+                        montant)):
                     raise Exception("Le solde de votre Compte est unsuffisent")
-                elif(compte.etat == "negatif"):
-                    compte.valeur = str(montant+int(compte.valeur))
-                elif(compte.etat == "positif"):
-                    if(montant > int(compte.valeur)):
-                        compte.valeur = str(montant-int(compte.valeur))
+                elif compte.etat == "negatif":
+                    compte.valeur = str(montant + int(compte.valeur))
+                elif compte.etat == "positif":
+                    if montant > int(compte.valeur):
+                        compte.valeur = str(montant - int(compte.valeur))
                         compte.etat = "negatif"
                     else:
-                        compte.valeur = str(int(compte.valeur)-montant)
+                        compte.valeur = str(int(compte.valeur) - montant)
             else:
                 raise Exception("type de transaction est indefini")
         comptes.append(compte)
     f.close()
-    if(not existe):
+    if not existe:
         raise Exception("Le compte Specifie est inrovable")
     # Clear the file
     f = open(comptes_file, 'w')
     f.close()
-    #print("lenArray:"+str(len(comptes)))
+    # print("lenArray:"+str(len(comptes)))
     for compte in comptes:
-        #compte.AfficherCompte()
+        # compte.AfficherCompte()
         compte.WriteFile()
     print("Compte modifie avec success")
 
@@ -127,13 +128,13 @@ def EstExiste(refCompteRecherche):
         ligne = f.readline()
         print(ligne)
         # if(ligne == b''):
-        if(ligne == ''):
+        if ligne == '':
             break
         decryptedData = DecryptData('compteKey.key', ligne)
         data = decryptedData.split('.')
         compte = Compte(data[0], data[1], data[2],
                         data[3], data[4], data[5])
-        if (int(compte.refCompte) == int(refCompteRecherche)):
+        if int(compte.refCompte) == int(refCompteRecherche):
             return True
     f.close()
     return False
@@ -155,7 +156,7 @@ def authenticate(refCompte, password):
     resultat = dict()
     while True:
         ligne = f.readline()
-        if(ligne == b''):
+        if (ligne == b''):
             break
         decryptedData = DecryptData('compteKey.key', ligne)
         data = decryptedData.split('.')
@@ -177,7 +178,7 @@ def authenticate(refCompte, password):
 # Compte("1001","rami","200","positif","500","nejah").WriteFile()
 # Compte("1002","dhia","200","positif","500","nejah").WriteFile()
 # Compte("1003","siwar","200","positif","500","nejah").WriteFile()
-#ModifierCompte(1000, "retrait", 500)
+# ModifierCompte(1000, "retrait", 500)
 # LireCompte(1003).AfficherCompte()
 # compte.WriteFile()
 # decryptedCompte=LireCompte(1002)

@@ -8,7 +8,7 @@ from datetime import datetime
 
 HEADER = 64
 PORT = 5050
-#SERVER = socket.gethostbyname(socket.gethostname())
+# SERVER = socket.gethostbyname(socket.gethostname())
 SERVER = "172.18.3.163"
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
@@ -17,7 +17,7 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 ANSWER_MESSAGE = "!ANSWER"
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+# server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind(ADDR)
 
 connections = []
